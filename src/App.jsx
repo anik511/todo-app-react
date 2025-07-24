@@ -7,6 +7,7 @@ import {
   Box
 } from '@mui/material';
 import TopAppBar from './components/TopAppBar';
+import KanbanBoard from './components/KanbanBoard';
 
 function App() {
   const [themeMode, setThemeMode] = useState(() => {
@@ -133,6 +134,7 @@ function App() {
               Move tasks through different stages and boost your productivity.
             </Typography>
           </Box>
+          <KanbanBoard />
         </Container>
       </Box>
     </ThemeProvider>
