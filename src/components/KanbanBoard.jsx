@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Grid, Fade, Grow, Snackbar, Alert, Typography } from '@mui/material';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import TodoColumn from './TodoColumn';
 import todoIndexedDB from '../utils/indexedDB';
 
@@ -199,24 +201,20 @@ function KanbanBoard() {
     }));
   };
 
-  
-
   const deleteTodo = (id) => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
+  
+  // Handle drag and drop
+  const handleDrop = (draggedId, targetStatus) => {
+    moveTodo(draggedId, targetStatus);
+  };
 
   return (
+    <DndProvider backend={HTML5Backend}>
       <Box sx={{ flexGrow: 1, height: '100%' }}>
         {isLoading ? (
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              height: '100%',
-              minHeight: '400px'
-            }}
-          >
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: '400px' }}>
             <Typography variant="h6" color="text.secondary">
               Loading your tasks...
             </Typography>
@@ -259,6 +257,7 @@ function KanbanBoard() {
                     addTodo={addTodo}
                     isNewColumn={status === STATUS.NEW}
                     totalTodos={todos.length}
+                    onDrop={handleDrop}
                   />
                 </Grid>
               </Grow>
@@ -282,6 +281,7 @@ function KanbanBoard() {
           </Alert>
         </Snackbar>
       </Box>
+    </DndProvider>
   );
 }
 

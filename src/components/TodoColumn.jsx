@@ -12,6 +12,7 @@ import {
   PlayCircle as OngoingIcon,
   CheckCircle as DoneIcon
 } from '@mui/icons-material';
+import { useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
 import NewTodoForm from './NewTodoForm';
 
@@ -32,10 +33,24 @@ function TodoColumn({
   deleteTodo, 
   addTodo, 
   isNewColumn, 
-  allStatuses 
+  allStatuses,
+  onDrop
 }) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
+
+  // Set up drop target
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'TODO_ITEM',
+    drop: (item) => {
+      if (item.status !== status) {
+        onDrop(item.id, status);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }), [status, onDrop]);
 
   // Sort todos based on status and priority
   const sortedTodos = [...todos].sort((a, b) => {
@@ -63,6 +78,7 @@ function TodoColumn({
 
   return (
     <Paper 
+      ref={drop}
       elevation={0}
       sx={{ 
         p: 3,
@@ -80,7 +96,7 @@ function TodoColumn({
         transition: 'all 0.3s ease',
         position: 'relative',
         overflow: 'hidden',
-        transform: 'scale(1)',
+        transform: isOver ? 'scale(1.05)' : 'scale(1)',
         backgroundColor: 'transparent',
         '&::before': {
           content: '""',
@@ -93,7 +109,7 @@ function TodoColumn({
           borderRadius: '12px 12px 0 0',
         },
         '&:hover': {
-          transform: 'translateY(-2px)',
+          transform: isOver ? 'scale(1.05)' : 'translateY(-2px)',
           boxShadow: `0 12px 24px ${alpha(statusColors.primary, 0.15)}`,
         }
       }}

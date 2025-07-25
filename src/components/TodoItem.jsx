@@ -8,11 +8,21 @@ import {
   Undo as UndoIcon, ExpandMore as ExpandIcon, Schedule as TimeIcon,
   Person as PersonIcon, Warning as WarningIcon, Schedule as ScheduleIcon
 } from '@mui/icons-material';
+import { useDrag } from 'react-dnd';
 
 function TodoItem({ todo, statusColors, moveTodo, deleteTodo }) {
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
+
+  // Set up drag functionality
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'TODO_ITEM',
+    item: { id: todo.id, status: todo.status },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }), [todo.id, todo.status]);
 
   // Get priority colors and display
   const getPriorityDisplay = (priority) => {
@@ -140,6 +150,7 @@ function TodoItem({ todo, statusColors, moveTodo, deleteTodo }) {
   return (
     <>
       <Card
+        ref={drag}
         elevation={0}
         sx={{
           background: isDark
@@ -159,7 +170,8 @@ function TodoItem({ todo, statusColors, moveTodo, deleteTodo }) {
           flexDirection: 'column',
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
-          opacity: 1,
+          opacity: isDragging ? 1 : 1,
+          cursor: isDragging ? 'grabbing' : 'grab',
           '&::before': { content: '""', position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: statusColors.gradient },
           '&:hover': {
             transform: 'translateY(-2px)',
