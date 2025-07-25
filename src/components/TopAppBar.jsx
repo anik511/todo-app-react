@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { 
-  AppBar as MuiAppBar, 
+  AppBar, 
   Toolbar, 
   IconButton, 
   Menu, 
@@ -43,7 +43,7 @@ function TopAppBar({ themeMode, onThemeChange, actualTheme }) {
   };
 
   return (
-    <MuiAppBar 
+    <AppBar 
       position="static" 
       elevation={0}
       sx={{ 
@@ -58,11 +58,6 @@ function TopAppBar({ themeMode, onThemeChange, actualTheme }) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 600 }}>
           Todo Board
         </Typography>
-        <Chip 
-          label={themeMode.charAt(0).toUpperCase() + themeMode.slice(1)} 
-          size="small" 
-          sx={{ mr: 2, color: 'white', backgroundColor: 'rgba(255,255,255,0.2)' }}
-        />
         <IconButton
           size="large"
           edge="end"
@@ -96,7 +91,7 @@ function TopAppBar({ themeMode, onThemeChange, actualTheme }) {
           </MenuItem>
         </Menu>
       </Toolbar>
-    </MuiAppBar>
+    </AppBar>
   );
 }
 
